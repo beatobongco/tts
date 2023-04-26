@@ -3,12 +3,14 @@
     <title>TTS test</title>
 </head>
 <body>
-    <button id="test">Test</button>
+    <div>
+        <button id="test">Text to Speech</button>
+    </div>
+    <div>
+        <button id="start-button">Transcribe</button>
+        <p id="transcript"></p>
+    </div>
     <script>
-        var test = document.getElementById('test');
-        test.addEventListener('click', function(){
-            speak();
-        });
         function speak() {
             if ('speechSynthesis' in window) {
                 // Create a new SpeechSynthesisUtterance object
@@ -21,6 +23,60 @@
                 // Call the speak() method to start speaking the text
                 window.speechSynthesis.speak(message);
             }
+        }
+        const test = document.getElementById('test');
+        test.addEventListener('click', function(){
+            speak();
+        });
+
+        // First, check if the Web Speech API is available in the current browser
+        if ('webkitSpeechRecognition' in window) {
+            // Create a new SpeechRecognition object
+            var recognition = new webkitSpeechRecognition();
+            
+            // Set the language to Japanese
+            recognition.lang = 'ja-JP';
+            
+            // Set the maximum number of alternatives to transcribe
+            recognition.maxAlternatives = 1;
+            
+            // Set a variable to store the transcript
+            var transcript = '';
+
+            // Set a callback function to handle the recognition results
+            recognition.onresult = function(event) {
+                // Get the first transcript from the recognition result
+                var interimTranscript = event.results[0][0].transcript;
+
+                // Concatenate the interim transcript with the previous transcript
+                transcript += interimTranscript;
+
+                // Output the transcript to a <p> element with ID "transcript"
+                var p = document.getElementById('transcript');
+                p.textContent = transcript;
+            }
+            
+            // Get the button element
+            var button = document.getElementById('start-button');
+            
+            // Set a click event listener on the button
+            button.addEventListener('click', function() {
+                console.log(22)
+                // Start the speech recognition
+                try {
+                   recognition.start();
+                } catch (e) {
+                    console.error('Failed to start speech recognition:', e);
+                    alert('Failed to start speech recognition. Please check your microphone and browser settings.');
+                }
+                
+                // Stop the recognition after 2 seconds
+                setTimeout(function() {
+                    recognition.stop();
+                }, 5000);
+            });
+        } else {
+            console.log('Speech recognition is not supported.')
         }
     </script>
 </body>
