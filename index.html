@@ -1,0 +1,27 @@
+<html>
+<head>
+    <title>TTS test</title>
+</head>
+<body>
+    <button id="test">Test</button>
+    <script>
+        var test = document.getElementById('test');
+        test.addEventListener('click', function(){
+            speak();
+        });
+        function speak() {
+            if ('speechSynthesis' in window) {
+                // Create a new SpeechSynthesisUtterance object
+                var message = new SpeechSynthesisUtterance();
+                
+                // Set the language and text to be spoken
+                message.lang = 'ja-JP';
+                message.text = 'おはようございます'; // Japanese text for 'Good morning'
+                
+                // Call the speak() method to start speaking the text
+                window.speechSynthesis.speak(message);
+            }
+        }
+    </script>
+</body>
+</html>
